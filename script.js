@@ -12,26 +12,34 @@ const iconUnmuted = document.getElementById('iconUnmuted');
 /* ── Auto-play muted first (browser requirement) ── */
 bgVideo.muted = true;
 bgVideo.volume = 1;
-bgVideo.play();
+bgVideo.play().catch(() => {});
 
-/* ── Unmute on first user interaction (works on mobile too) ── */
+/* ── Unmute on first user interaction ── */
 let soundUnlocked = false;
-function unlockSound() {
+
+function unlockSound(e) {
   if (soundUnlocked) return;
   soundUnlocked = true;
+
   bgVideo.muted = false;
   bgVideo.volume = 1;
-  // Re-trigger play in case mobile paused it
-  bgVideo.play().catch(() => {});
+
+  // Must call play() synchronously inside the user gesture on iOS
+  const p = bgVideo.play();
+  if (p !== undefined) p.catch(() => {});
+
   iconMuted.style.display   = 'none';
   iconUnmuted.style.display = 'block';
   soundBtn.setAttribute('aria-label', 'Mute video');
-  ['click','touchstart','touchend','keydown','scroll'].forEach(ev =>
-    document.removeEventListener(ev, unlockSound)
+
+  ['click','touchstart','touchend','keydown'].forEach(ev =>
+    document.removeEventListener(ev, unlockSound, true)
   );
 }
-['click','touchstart','touchend','keydown','scroll'].forEach(ev =>
-  document.addEventListener(ev, unlockSound, { once: false, passive: true })
+
+// Use capture:true so it fires before any other handler on mobile
+['click','touchstart','touchend','keydown'].forEach(ev =>
+  document.addEventListener(ev, unlockSound, { capture: true, passive: true })
 );
 
 /* ── Mute / Unmute button ── */

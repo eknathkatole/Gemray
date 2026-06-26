@@ -83,7 +83,7 @@ body {
 .mob-cta:hover { background:var(--blue); }
 
 @media(max-width:900px) { .nav-links,.nav-cta{display:none} .hamburger{display:flex} .nav-container{padding:0 20px} }
-@media(max-width:480px) { .nav-logo span{font-size:1.4rem} .nav-logo img{height:34px} }
+@media(max-width:480px) { .nav-logo span{font-size:1.4rem} .nav-logo img{height:48px;} }
 
 /* ══ HERO ══ */
 .hero {
