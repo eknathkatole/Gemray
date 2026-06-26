@@ -9,38 +9,40 @@ const soundBtn    = document.getElementById('soundBtn');
 const iconMuted   = document.getElementById('iconMuted');
 const iconUnmuted = document.getElementById('iconUnmuted');
 
+/* ── Enter overlay ── */
+const enterOverlay = document.getElementById('enterOverlay');
+const enterBtn     = document.getElementById('enterBtn');
+const enterSkip    = document.getElementById('enterSkip');
+
+function enterWithSound() {
+  bgVideo.muted = false;
+  bgVideo.volume = 1;
+  bgVideo.play().catch(() => {});
+  iconMuted.style.display   = 'none';
+  iconUnmuted.style.display = 'block';
+  enterOverlay.classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+function enterWithoutSound() {
+  bgVideo.muted = true;
+  bgVideo.play().catch(() => {});
+  iconMuted.style.display   = 'block';
+  iconUnmuted.style.display = 'none';
+  enterOverlay.classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+enterBtn.addEventListener('click',  enterWithSound);
+enterSkip.addEventListener('click', enterWithoutSound);
+
+// Prevent scroll while overlay is visible
+document.body.style.overflow = 'hidden';
+
 /* ── Auto-play muted first (browser requirement) ── */
 bgVideo.muted = true;
 bgVideo.volume = 1;
 bgVideo.play().catch(() => {});
-
-/* ── Unmute on first user interaction ── */
-let soundUnlocked = false;
-
-function unlockSound(e) {
-  if (soundUnlocked) return;
-  soundUnlocked = true;
-
-  bgVideo.muted = false;
-  bgVideo.volume = 1;
-
-  // Must call play() synchronously inside the user gesture on iOS
-  const p = bgVideo.play();
-  if (p !== undefined) p.catch(() => {});
-
-  iconMuted.style.display   = 'none';
-  iconUnmuted.style.display = 'block';
-  soundBtn.setAttribute('aria-label', 'Mute video');
-
-  ['click','touchstart','touchend','keydown'].forEach(ev =>
-    document.removeEventListener(ev, unlockSound, true)
-  );
-}
-
-// Use capture:true so it fires before any other handler on mobile
-['click','touchstart','touchend','keydown'].forEach(ev =>
-  document.addEventListener(ev, unlockSound, { capture: true, passive: true })
-);
 
 /* ── Mute / Unmute button ── */
 soundBtn.addEventListener('click', e => {
