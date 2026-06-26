@@ -40,8 +40,8 @@ body {
 .navbar.scrolled .nav-container { height: var(--nav-hsm); }
 
 .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; flex-shrink:0; }
-.nav-logo img { height:42px; object-fit:contain; transition:height var(--ease); }
-.navbar.scrolled .nav-logo img { height:32px; }
+.nav-logo img { height:58px; object-fit:contain; transition:height var(--ease); }
+.navbar.scrolled .nav-logo img { height:44px; }
 .nav-logo span { font-family:'Great Vibes',cursive; font-size:1.7rem; color:var(--primary); white-space:nowrap; transition:font-size var(--ease); }
 .navbar.scrolled .nav-logo span { font-size:1.4rem; }
 

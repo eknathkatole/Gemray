@@ -14,19 +14,25 @@ bgVideo.muted = true;
 bgVideo.volume = 1;
 bgVideo.play();
 
-/* ── Unmute instantly on first user interaction anywhere ── */
+/* ── Unmute on first user interaction (works on mobile too) ── */
+let soundUnlocked = false;
 function unlockSound() {
+  if (soundUnlocked) return;
+  soundUnlocked = true;
   bgVideo.muted = false;
+  bgVideo.volume = 1;
+  // Re-trigger play in case mobile paused it
+  bgVideo.play().catch(() => {});
   iconMuted.style.display   = 'none';
   iconUnmuted.style.display = 'block';
   soundBtn.setAttribute('aria-label', 'Mute video');
-  document.removeEventListener('click',      unlockSound);
-  document.removeEventListener('touchstart', unlockSound);
-  document.removeEventListener('keydown',    unlockSound);
+  ['click','touchstart','touchend','keydown','scroll'].forEach(ev =>
+    document.removeEventListener(ev, unlockSound)
+  );
 }
-document.addEventListener('click',      unlockSound);
-document.addEventListener('touchstart', unlockSound);
-document.addEventListener('keydown',    unlockSound);
+['click','touchstart','touchend','keydown','scroll'].forEach(ev =>
+  document.addEventListener(ev, unlockSound, { once: false, passive: true })
+);
 
 /* ── Mute / Unmute button ── */
 soundBtn.addEventListener('click', e => {
