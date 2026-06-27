@@ -9,40 +9,22 @@ const soundBtn    = document.getElementById('soundBtn');
 const iconMuted   = document.getElementById('iconMuted');
 const iconUnmuted = document.getElementById('iconUnmuted');
 
-/* ── Enter overlay ── */
-const enterOverlay = document.getElementById('enterOverlay');
-const enterBtn     = document.getElementById('enterBtn');
-const enterSkip    = document.getElementById('enterSkip');
+/* ── Auto-play muted (browser requirement) ── */
+bgVideo.muted = true;
+iconMuted.style.display   = 'block';
+iconUnmuted.style.display = 'none';
+bgVideo.play().catch(() => {});
 
-function enterWithSound() {
+/* ── Unmute on first user interaction ── */
+function unlockSound() {
   bgVideo.muted = false;
   bgVideo.volume = 1;
-  bgVideo.play().catch(() => {});
   iconMuted.style.display   = 'none';
   iconUnmuted.style.display = 'block';
-  enterOverlay.classList.add('hidden');
-  document.body.style.overflow = '';
+  soundBtn.setAttribute('aria-label', 'Mute video');
+  document.removeEventListener('click', unlockSound);
 }
-
-function enterWithoutSound() {
-  bgVideo.muted = true;
-  bgVideo.play().catch(() => {});
-  iconMuted.style.display   = 'block';
-  iconUnmuted.style.display = 'none';
-  enterOverlay.classList.add('hidden');
-  document.body.style.overflow = '';
-}
-
-enterBtn.addEventListener('click',  enterWithSound);
-enterSkip.addEventListener('click', enterWithoutSound);
-
-// Prevent scroll while overlay is visible
-document.body.style.overflow = 'hidden';
-
-/* ── Auto-play muted first (browser requirement) ── */
-bgVideo.muted = true;
-bgVideo.volume = 1;
-bgVideo.play().catch(() => {});
+document.addEventListener('click', unlockSound);
 
 /* ── Mute / Unmute button ── */
 soundBtn.addEventListener('click', e => {
